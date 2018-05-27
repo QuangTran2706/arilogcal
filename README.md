@@ -1,7 +1,12 @@
 ## Dead simple calculator hardware design using VHDL
 
 ![Board](./demo.JPG)
-Specs
+
+## Synthesized Circuit
+
+![Circuit](./circuit.png)
+
+## Specs
 ```
 The AriLogCal module can perform correctly arithmetic and logical operations between two operands OpA and OpB. Each operand is a positive integer ranging from 0 to 15.
 The AriLogCal module supports below arithmetic operations:
