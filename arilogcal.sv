@@ -95,30 +95,18 @@ module arilogcal(
 			end
 			endcase
 			last_equal_to <= equalTo;
-			last_do_opt <= doOpt;
-			last_a <= optA;
-			last_b <= optB;
 		end
 		else if (last_a != optA) begin
 			a <= optA;
-			last_equal_to <= equalTo;
-			last_do_opt <= doOpt;
 			last_a <= optA;
-			last_b <= optB;
 		end	
 		else if (last_b != optB) begin
 			b <= optB;
-			last_equal_to <= equalTo;
-			last_do_opt <= doOpt;
-			last_a <= optA;
 			last_b <= optB;
 		end	
 		else if (doOpt != last_do_opt) begin
 			opt <= doOpt; 
-			last_equal_to <= equalTo;
 			last_do_opt <= doOpt;
-			last_a <= optA;
-			last_b <= optB;
 		end
 		else begin
 			last_equal_to <= equalTo;
@@ -127,7 +115,6 @@ module arilogcal(
 			last_b <= optB;
 		end
 	end
-	
 	DisplaySeg s7(.number((a / 10) % 10), .seg_display(seg7));
 	DisplaySeg s6(.number(a % 10), .seg_display(seg6));
 
