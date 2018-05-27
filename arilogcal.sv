@@ -79,14 +79,14 @@ module arilogcal(
 				end
 			end
 			4: begin // Logical And
-				res2 <= 8'b1100_0000;
-				res1 <= 8'b1100_0000;
-				res0 <= (a & b) ? 1 : 0;
+				res2 <= (a && b) ? 1 : 0;
+				res1 <= (a && b) ? 1 : 0;
+				res0 <= (a && b) ? 1 : 0;
 			end
 			5: begin // Logical OR
-				res2 <= 8'b1100_0000;
-				res1 <= 8'b1100_0000;
-				res0 <= (a | b) ? 1 : 0;
+				res2 <= (a || b) ? 1 : 0;
+				res1 <= (a || b) ? 1 : 0;
+				res0 <= (a || b) ? 1 : 0;
 			end
 			default: begin
 				res2 <= 14; // E
