@@ -33,6 +33,12 @@ module arilogcal(
 	output logic [7:0]seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7
 );
 	logic last_equal_to;
+	logic last_do_opt;
+	
+	logic [2:0] opt;
+	logic [3:0] a;
+	logic [3:0] b;
+	
 	logic [4:0] res2;
 	logic [4:0] res1;
 	logic [4:0] res0;
@@ -42,9 +48,10 @@ module arilogcal(
 			res2 <= 8'b1100_0000;
 			res1 <= 8'b1100_0000;
 			res0 <= 8'b1100_0000;
+			opt <= 0;
 		end
 		else if (!equalTo && last_equal_to == 1) begin
-			case(doOpt)
+			case(opt)
 			1: begin // Additional
 				res2 <= ((optA + optB) / 100) % 10;
 				res1 <= ((optA + optB) / 10) % 10;
@@ -84,9 +91,15 @@ module arilogcal(
 			end
 			endcase
 			last_equal_to <= equalTo;	
+			last_do_opt <= doOpt;
+		end
+		else if (doOpt != last_do_opt) begin
+			opt <= doOpt; 
+			last_do_opt <= doOpt;
 		end
 		else begin
 			last_equal_to <= equalTo;
+			last_do_opt <= doOpt;
 		end
 	end
 	
@@ -96,12 +109,11 @@ module arilogcal(
 	DisplaySeg s5(.number((optB / 10) % 10), .seg_display(seg5));
 	DisplaySeg s4(.number(optB % 10), .seg_display(seg4));
 	
-	DisplaySeg o(.number(doOpt), .seg_display(seg3));
+	DisplaySeg o(.number(opt), .seg_display(seg3));
 	
 	DisplaySeg s2(.number(res2), .seg_display(seg2));
 	DisplaySeg s1(.number(res1), .seg_display(seg1));
 	DisplaySeg s0(.number(res0), .seg_display(seg0));
-
 endmodule
 
 
