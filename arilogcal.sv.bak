@@ -1,0 +1,9 @@
+module arilogcal(
+	input logic [3:0]optA, [3:0]optB, [2:0]doOpt, equalTo, ac, clock,
+	output logic [7:0]segI
+);
+
+endmodule
+
+
+	
