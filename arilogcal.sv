@@ -33,7 +33,9 @@ module arilogcal(
 	output logic [7:0]seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7
 );
 	logic last_equal_to;
-	logic last_do_opt;
+	logic [2:0] last_do_opt;
+	logic [3:0] last_a;
+	logic [3:0] last_b;
 	
 	logic [2:0] opt;
 	logic [3:0] a;
@@ -45,44 +47,46 @@ module arilogcal(
 
 	always_ff@(posedge clk, negedge ac) begin
 		if (!ac) begin
-			res2 <= 8'b1100_0000;
-			res1 <= 8'b1100_0000;
-			res0 <= 8'b1100_0000;
+			res2 <= 17; // Turning the LEDS off
+			res1 <= 17;
+			res0 <= 17; 
 			opt <= 0;
+			a <= 0;
+			b <= 0;
 		end
 		else if (!equalTo && last_equal_to == 1) begin
 			case(opt)
 			1: begin // Additional
-				res2 <= ((optA + optB) / 100) % 10;
-				res1 <= ((optA + optB) / 10) % 10;
-				res0 <= (optA + optB) % 10;
+				res2 <= ((a + b) / 100) % 10;
+				res1 <= ((a + b) / 10) % 10;
+				res0 <= (a + b) % 10;
 			end
 			2: begin // Multiplication
-				res2 <= ((optA * optB) / 100) % 10;
-				res1 <= ((optA * optB) / 10) % 10;
-				res0 <= (optA * optB) % 10;
+				res2 <= ((a * b) / 100) % 10;
+				res1 <= ((a * b) / 10) % 10;
+				res0 <= (a * b) % 10;
 			end
 			3: begin // Division
-				if (optB == 0) begin
+				if (b == 0) begin
 					res2 <= 14; // E
 					res1 <= 16; // r
 					res0 <= 16; // r
 				end
 				else begin
-					res2 <= ((optA / optB) / 100) % 10;
-					res1 <= ((optA / optB) / 10) % 10;
-					res0 <= (optA / optB) % 10;
+					res2 <= ((a / b) / 100) % 10;
+					res1 <= ((a / b) / 10) % 10;
+					res0 <= (a / b) % 10;
 				end
 			end
 			4: begin // Logical And
 				res2 <= 8'b1100_0000;
 				res1 <= 8'b1100_0000;
-				res0 <= (optA & optB) ? 1 : 0;
+				res0 <= (a & b) ? 1 : 0;
 			end
 			5: begin // Logical OR
 				res2 <= 8'b1100_0000;
 				res1 <= 8'b1100_0000;
-				res0 <= (optA | optB) ? 1 : 0;
+				res0 <= (a | b) ? 1 : 0;
 			end
 			default: begin
 				res2 <= 14; // E
@@ -90,24 +94,45 @@ module arilogcal(
 				res0 <= 16; // r
 			end
 			endcase
-			last_equal_to <= equalTo;	
+			last_equal_to <= equalTo;
 			last_do_opt <= doOpt;
+			last_a <= optA;
+			last_b <= optB;
 		end
+		else if (last_a != optA) begin
+			a <= optA;
+			last_equal_to <= equalTo;
+			last_do_opt <= doOpt;
+			last_a <= optA;
+			last_b <= optB;
+		end	
+		else if (last_b != optB) begin
+			b <= optB;
+			last_equal_to <= equalTo;
+			last_do_opt <= doOpt;
+			last_a <= optA;
+			last_b <= optB;
+		end	
 		else if (doOpt != last_do_opt) begin
 			opt <= doOpt; 
+			last_equal_to <= equalTo;
 			last_do_opt <= doOpt;
+			last_a <= optA;
+			last_b <= optB;
 		end
 		else begin
 			last_equal_to <= equalTo;
 			last_do_opt <= doOpt;
+			last_a <= optA;
+			last_b <= optB;
 		end
 	end
 	
-	DisplaySeg s7(.number((optA / 10) % 10), .seg_display(seg7));
-	DisplaySeg s6(.number(optA % 10), .seg_display(seg6));
+	DisplaySeg s7(.number((a / 10) % 10), .seg_display(seg7));
+	DisplaySeg s6(.number(a % 10), .seg_display(seg6));
 
-	DisplaySeg s5(.number((optB / 10) % 10), .seg_display(seg5));
-	DisplaySeg s4(.number(optB % 10), .seg_display(seg4));
+	DisplaySeg s5(.number((b / 10) % 10), .seg_display(seg5));
+	DisplaySeg s4(.number(b % 10), .seg_display(seg4));
 	
 	DisplaySeg o(.number(opt), .seg_display(seg3));
 	
