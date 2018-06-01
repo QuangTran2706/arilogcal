@@ -2,10 +2,6 @@
 
 ![Board](./demo.JPG)
 
-## Synthesized Circuit
-
-![Circuit](./circuit.png)
-
 ## Specs
 ```
 The AriLogCal module can perform correctly arithmetic and logical operations between two operands OpA and OpB. Each operand is a positive integer ranging from 0 to 15.
